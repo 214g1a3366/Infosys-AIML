@@ -1,0 +1,31 @@
+#Install Dependencies
+pip install azure-cognitiveservices-vision-customvision
+
+#code for classification
+from azure.cognitiveservices.vision.customvision.prediction import CustomVisionPredictionClient
+from msrest.authentication import ApiKeyCredentials
+
+
+ENDPOINT = "YOUR ENDPOINT"
+PREDICTION_KEY = "YOUR PREDICTION KEY"  
+PROJECT_ID = "YOUR PROJECT ID"
+ITERATION_NAME = "YOUR ITERATION NAME"  
+
+credentials = ApiKeyCredentials(in_headers={"Prediction-key": PREDICTION_KEY})
+predictor = CustomVisionPredictionClient(ENDPOINT, credentials)
+
+
+def predict_image_from_url(image_url):
+    results = predictor.classify_image_url(
+        project_id=PROJECT_ID,
+        published_name=ITERATION_NAME,
+        url=image_url
+    )
+
+   
+    for prediction in results.predictions:
+        print(f"{prediction.tag_name}: {prediction.probability * 100:.2f}%")
+
+
+image_url = "https://wallpaperaccess.com/full/2319732.jpg"    #give your image url
+predict_image_from_url(image_url)
